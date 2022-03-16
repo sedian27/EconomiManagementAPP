@@ -15,6 +15,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = D:\Repository\Semillero3\dotNet\EconomicManagementAPP\EconomicManagementAPP
 build_property._RazorSourceGeneratorDebug = 
 
+[D:/Repository/Semillero3/dotNet/EconomicManagementAPP/EconomicManagementAPP/Views/AccountTypes/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFR5cGVzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Repository/Semillero3/dotNet/EconomicManagementAPP/EconomicManagementAPP/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
