@@ -69,5 +69,62 @@ namespace EconomicManagementAPP.Controllers
 
             return Json(true);
         }
+
+        //Actualizar
+        [HttpGet]
+        public async Task<ActionResult> Modify(int id)
+        {
+            var userId = 1;
+            var accountType = await repositorieAccountTypes.getAccountById(id, userId);
+
+            if (accountType is null)
+            {
+                return RedirectToAction("NotFound", "Home");
+            }
+
+            return View(accountType);
+        }
+        [HttpPost]
+        public async Task<ActionResult> Modify(AccountTypes accountTypes)
+        {
+            var userId = 1;
+            var accountType = await repositorieAccountTypes.getAccountById(accountTypes.Id, userId);
+
+            if (accountType is null)
+            {
+                return RedirectToAction("NotFound", "Home");
+            }
+
+            await repositorieAccountTypes.Modify(accountTypes);// el que llega
+            return RedirectToAction("Index");
+        }
+        // Eliminar
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var userId = 1;
+            var account = await repositorieAccountTypes.getAccountById(id, userId);
+
+            if (account is null)
+            {
+                return RedirectToAction("NotFount", "Home");
+            }
+
+            return View(account);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteAccount(int id)
+        {
+            var userId = 1;
+            var account = await repositorieAccountTypes.getAccountById(id, userId);
+
+            if (account is null)
+            {
+                return RedirectToAction("NotFound", "Home");
+            }
+
+            await repositorieAccountTypes.Delete(id);
+            return RedirectToAction("Index");
+        }
     }
 }

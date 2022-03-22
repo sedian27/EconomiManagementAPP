@@ -9,6 +9,9 @@ namespace EconomicManagementAPP.Services
         Task Create(AccountTypes accountTypes); // Se agrega task por el asincronismo
         Task<bool> Exist(string Name, int UserId);
         Task<IEnumerable<AccountTypes>> getAccounts(int UserId);
+        Task Modify(AccountTypes accountTypes);
+        Task<AccountTypes> getAccountById(int id, int userId); // para el modify
+        Task Delete(int id);
     }
     public class RepositorieAccountTypes : IRepositorieAccountTypes
     {
@@ -50,6 +53,32 @@ namespace EconomicManagementAPP.Services
                                                             FROM AccountTypes
                                                             WHERE UserId = @UserId
                                                             ORDER BY OrderAccount", new { UserId });
+        }
+        // Actualizar
+        public async Task Modify(AccountTypes accountTypes)
+        {
+            using var connection = new SqlConnection(connectionString);
+            await connection.ExecuteAsync(@"UPDATE AccountTypes
+                                            SET Name = @Name
+                                            WHERE Id = @Id", accountTypes);
+        }
+
+        //Para actualizar se necesita obtener el tipo de cuenta por el id
+        public async Task<AccountTypes> getAccountById(int id, int userId)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryFirstOrDefaultAsync<AccountTypes>(@"
+                                                                SELECT Id, Name, UserId, OrderAccount
+                                                                FROM AccountTypes
+                                                                WHERE Id = @Id AND UserID = @UserID",
+                                                                new { id, userId });
+        }
+
+        //Eliminar
+        public async Task Delete(int id)
+        {
+            using var connection = new SqlConnection(connectionString);
+            await connection.ExecuteAsync("DELETE AccountTypes WHERE Id = @Id", new { id });
         }
     }
 }

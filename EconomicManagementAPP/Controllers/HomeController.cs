@@ -23,6 +23,12 @@ namespace EconomicManagementAPP.Controllers
             return View();
         }
 
+        // Interfaz para error de no encontrar el id
+        public IActionResult NotFound()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
