@@ -26,13 +26,15 @@ namespace EconomicManagementAPP.Services
         {
             using var connection = new SqlConnection(connectionString);
             // Requiere el await - tambien requiere el Async al final de la query
-            var id = await connection.QuerySingleAsync<int>($@"INSERT INTO AccountTypes 
+            var id = await connection.QuerySingleAsync<int>(@"INSERT INTO AccountTypes 
                                                 (Name, UserId, OrderAccount) 
                                                 VALUES (@Name, @UserId, @OrderAccount); SELECT SCOPE_IDENTITY();", accountTypes);
             accountTypes.Id = id;
         }
 
         //Cuando retorna un tipo de dato se debe poner en el Task Task<bool>
+        // new { Name, UserId } -> según las consultas aplicando dapper nos dice que se sigue un orden (sql, object param)
+        // por lo que nos pide un objeto a ser Name & UserId dos datos fuera de un objeto son convertidos para así poder realizar las consultas.
         public async Task<bool> Exist(string Name, int UserId)
         {
             using var connection = new SqlConnection(connectionString);
@@ -67,6 +69,7 @@ namespace EconomicManagementAPP.Services
         public async Task<AccountTypes> getAccountById(int id, int userId)
         {
             using var connection = new SqlConnection(connectionString);
+
             return await connection.QueryFirstOrDefaultAsync<AccountTypes>(@"
                                                                 SELECT Id, Name, UserId, OrderAccount
                                                                 FROM AccountTypes

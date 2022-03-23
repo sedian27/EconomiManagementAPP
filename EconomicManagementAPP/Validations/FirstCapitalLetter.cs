@@ -20,8 +20,4 @@ namespace EconomicManagementAPP.Validations
             return ValidationResult.Success;
         }
     }
-
-
-
-
 }

@@ -14,8 +14,10 @@ namespace EconomicManagementAPP.Controllers
         }
 
         // Creamos index para ejecutar la interfaz
+        // Task : Representa una operación asincrónica que puede devolver un valor.
         public async Task<IActionResult> Index()
         {
+            // Simula que estamos logeados en la app.
             var userId = 1;
             var accountTypes = await repositorieAccountTypes.getAccounts(userId);
             return View(accountTypes);
@@ -64,7 +66,7 @@ namespace EconomicManagementAPP.Controllers
             if (accountTypeExist)
             {
                 // permite acciones directas entre front y back
-                return Json($"The account {Name} already exist");
+                return Json($"The account {Name} already exist");                                                                
             }
 
             return Json(true);
@@ -75,6 +77,7 @@ namespace EconomicManagementAPP.Controllers
         public async Task<ActionResult> Modify(int id)
         {
             var userId = 1;
+
             var accountType = await repositorieAccountTypes.getAccountById(id, userId);
 
             if (accountType is null)
