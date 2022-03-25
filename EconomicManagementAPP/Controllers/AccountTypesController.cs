@@ -19,7 +19,7 @@ namespace EconomicManagementAPP.Controllers
         {
             // Simula que estamos logeados en la app.
             var userId = 1;
-            var accountTypes = await repositorieAccountTypes.getAccounts(userId);
+            var accountTypes = await repositorieAccountTypes.GetAccounts(userId);
             return View(accountTypes);
         }
         public IActionResult Create()
@@ -78,7 +78,7 @@ namespace EconomicManagementAPP.Controllers
         {
             var userId = 1;
 
-            var accountType = await repositorieAccountTypes.getAccountById(id, userId);
+            var accountType = await repositorieAccountTypes.GetAccountById(id, userId);
 
             if (accountType is null)
             {
@@ -91,7 +91,7 @@ namespace EconomicManagementAPP.Controllers
         public async Task<ActionResult> Modify(AccountTypes accountTypes)
         {
             var userId = 1;
-            var accountType = await repositorieAccountTypes.getAccountById(accountTypes.Id, userId);
+            var accountType = await repositorieAccountTypes.GetAccountById(accountTypes.Id, userId);
 
             if (accountType is null)
             {
@@ -106,7 +106,7 @@ namespace EconomicManagementAPP.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var userId = 1;
-            var account = await repositorieAccountTypes.getAccountById(id, userId);
+            var account = await repositorieAccountTypes.GetAccountById(id, userId);
 
             if (account is null)
             {
@@ -119,7 +119,7 @@ namespace EconomicManagementAPP.Controllers
         public async Task<IActionResult> DeleteAccount(int id)
         {
             var userId = 1;
-            var account = await repositorieAccountTypes.getAccountById(id, userId);
+            var account = await repositorieAccountTypes.GetAccountById(id, userId);
 
             if (account is null)
             {
