@@ -10,7 +10,7 @@ namespace EconomicManagementAPP.Services
         Task<bool> Exist(string description);
         Task<OperationTypes> GetOperationTypeById(int id);
         Task<IEnumerable<OperationTypes>> GetOperationTypes();
-        Task Modify(OperationTypes operationTypes);
+        Task Modify(OperationTypes operationType);
         Task Delete(int id);
     }
     public class RepositorieOperationTypes : IRepositorieOperationTypes
@@ -52,12 +52,12 @@ namespace EconomicManagementAPP.Services
 
             return await connection.QueryAsync<OperationTypes>("SELECT Id, Description FROM OperationTypes");
         }
-        public async Task Modify(OperationTypes operationTypes)
+        public async Task Modify(OperationTypes operationType)
         {
             using var connection = new SqlConnection(connectionString);
             await connection.ExecuteAsync(@"UPDATE OperationTypes SET 
                                             Description = @Description
-                                            WHERE Id = @Id", operationTypes);
+                                            WHERE Id = @Id", operationType);
         }
         public async Task Delete(int id)
         {
