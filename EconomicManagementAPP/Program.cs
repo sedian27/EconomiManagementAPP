@@ -4,9 +4,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IRepositorieAccountTypes, RepositorieAccountTypes>();
-builder.Services.AddTransient<IRepositorieUsers, RepositorieUsers>();
 builder.Services.AddTransient<IRepositorieAccounts, RepositorieAccounts>();
+builder.Services.AddTransient<IRepositorieAccountTypes, RepositorieAccountTypes>();
+builder.Services.AddTransient<IRepositorieCategories, RepositorieCategories>();
+builder.Services.AddTransient<IRepositorieOperationTypes, RepositorieOperationTypes>();
+builder.Services.AddTransient<IRepositorieTransactions, RepositorieTransactions>();
+builder.Services.AddTransient<IRepositorieUsers, RepositorieUsers>();
 
 var app = builder.Build();
 
