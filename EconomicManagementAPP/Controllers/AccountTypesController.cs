@@ -7,10 +7,12 @@ namespace EconomicManagementAPP.Controllers
     public class AccountTypesController : Controller
     {
         private readonly IRepositorieAccountTypes repositorieAccountTypes;
+        private readonly IRepositorieUsers repositorieUsers;
 
-        public AccountTypesController(IRepositorieAccountTypes repositorieAccountTypes)
+        public AccountTypesController(IRepositorieAccountTypes repositorieAccountTypes, IRepositorieUsers repositorieUsers)
         {
             this.repositorieAccountTypes = repositorieAccountTypes;
+            this.repositorieUsers = repositorieUsers;
         }
 
         // Creamos index para ejecutar la interfaz
@@ -18,7 +20,7 @@ namespace EconomicManagementAPP.Controllers
         public async Task<IActionResult> Index()
         {
             // Simula que estamos logeados en la app.
-            var userId = 1;
+            var userId = repositorieUsers.GetUserId();
             var accountTypes = await repositorieAccountTypes.GetAccounts(userId);
             return View(accountTypes);
         }
@@ -76,7 +78,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpGet]
         public async Task<ActionResult> Modify(int id)
         {
-            var userId = 1;
+            var userId = repositorieUsers.GetUserId();
 
             var accountType = await repositorieAccountTypes.GetAccountById(id, userId);
 
@@ -90,7 +92,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<ActionResult> Modify(AccountTypes accountTypes)
         {
-            var userId = 1;
+            var userId = repositorieUsers.GetUserId();
             var accountType = await repositorieAccountTypes.GetAccountById(accountTypes.Id, userId);
 
             if (accountType is null)
@@ -105,7 +107,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = 1;
+            var userId = repositorieUsers.GetUserId();
             var account = await repositorieAccountTypes.GetAccountById(id, userId);
 
             if (account is null)
@@ -118,7 +120,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccount(int id)
         {
-            var userId = 1;
+            var userId = repositorieUsers.GetUserId();
             var account = await repositorieAccountTypes.GetAccountById(id, userId);
 
             if (account is null)

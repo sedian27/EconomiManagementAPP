@@ -7,11 +7,12 @@ namespace EconomicManagementAPP.Services
     public interface IRepositorieUsers
     {
         Task Create(Users user); // Se agrega task por el asincronismo
-        Task<bool> Exist(string Email, string StandarEmail);
+        Task<bool> Exist(string email);
         Task<IEnumerable<Users>> GetUsers();
         Task Modify(Users user);
         Task<Users> GetUserById(int id); // para el modify
         Task Delete(int id);
+        int GetUserId();
     }
     public class RepositorieUsers : IRepositorieUsers
     {
@@ -30,14 +31,14 @@ namespace EconomicManagementAPP.Services
             user.Id = id;
         }
 
-        public async Task<bool> Exist(string Email, string StandarEmail)
+        public async Task<bool> Exist(string email)
         {
             using var connection = new SqlConnection(connectionString);
             var exist = await connection.QueryFirstOrDefaultAsync<int>(
                                     @"SELECT 1
                                     FROM Users
-                                    WHERE Email = @Email OR StandarEmail = @StandarEmail;",
-                                    new { Email, StandarEmail });
+                                    WHERE Email = @email;",
+                                    new { email });
             return exist == 1;
         }
 
@@ -46,6 +47,12 @@ namespace EconomicManagementAPP.Services
             using var connection = new SqlConnection(connectionString);
             return await connection.QueryAsync<Users>("SELECT Id, Email, StandarEmail FROM Users;");
         }
+
+        public int GetUserId() 
+        {
+            return 1;
+        }
+
         public async Task Modify(Users user)
         {
             using var connection = new SqlConnection(connectionString);

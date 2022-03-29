@@ -1,7 +1,16 @@
+USE master
+GO
+
+DROP DATABASE IF EXISTS [EconomicManagementDB]
+GO
+
 CREATE DATABASE [EconomicManagementDB]
 GO
+
 USE [EconomicManagementDB]
 GO
+
+-- StandarEmail será el email en mayusculas
 CREATE TABLE [Users](
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	[Email] [nvarchar](256) NOT NULL,
@@ -9,11 +18,15 @@ CREATE TABLE [Users](
 	[Password] [nvarchar](max) NOT NULL,
 )
 GO
+
+-- Estas operaciones pueden ser: ingresos o gastos
 CREATE TABLE [OperationTypes](
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	[Description] [nvarchar](50) NOT NULL,
 )
 GO
+
+-- ejemplo: bancarias, prestamos, efectivo, credito, etc.
 CREATE TABLE [AccountTypes](
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	[Name] [nvarchar](50) NOT NULL,
@@ -22,6 +35,7 @@ CREATE TABLE [AccountTypes](
 	CONSTRAINT [FK_AccountTypesUsers] FOREIGN KEY (UserId) REFERENCES Users(Id)
 )
 GO
+
 CREATE TABLE [Accounts](
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	[Name] [nvarchar](50) NOT NULL,
@@ -31,14 +45,17 @@ CREATE TABLE [Accounts](
     CONSTRAINT [FK_AccountType] FOREIGN KEY (AccountTypeId) REFERENCES AccountTypes(Id)
 )
 GO
+
+-- Cada usuario puede tener sus propias categorias para clasificar sus transacciones.
 CREATE TABLE Categories(
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	[Name] [nvarchar](50) NOT NULL,
 	[OperationTypeId] [int] NOT NULL,
 	[UserId] [int] NOT NULL,
-    CONSTRAINT [FK_CategoriesOperations] FOREIGN KEY (OperationTypeId) REFERENCES OperationTypes(Id)	
+    CONSTRAINT [FK_CategoriesOperations] FOREIGN KEY (OperationTypeId) REFERENCES OperationTypes(Id),
 ) 
 GO
+
 CREATE TABLE [Transactions](
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	[UserId] [int] NOT NULL,
@@ -53,3 +70,4 @@ CREATE TABLE [Transactions](
 	CONSTRAINT [FK_TransactionsAccount] FOREIGN KEY (AccountId) REFERENCES Accounts(Id),
 	CONSTRAINT [FK_TransactionsCategories] FOREIGN KEY (CategoryId) REFERENCES Categories(Id)
 )
+GO

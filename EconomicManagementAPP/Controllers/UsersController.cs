@@ -18,27 +18,23 @@ namespace EconomicManagementAPP.Controllers
             var users = await repositorieUsers.GetUsers();
             return View(users);
         }
-        public IActionResult Create()
+        public IActionResult SignUp()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Users user)
+        public async Task<IActionResult> SignUp(Users user)
         {
             if (!ModelState.IsValid)
             {
                 return View(user);
             }
 
-            if(user.Email == user.StandarEmail) {
-                ModelState.AddModelError(nameof(user.StandarEmail),
-                    $"Email cannot be repeated ");
-                return View(user);
-            }
+            user.StandarEmail = user.Email.ToUpper();
 
             var userExist =
-               await repositorieUsers.Exist(user.Email, user.StandarEmail);
+               await repositorieUsers.Exist(user.Email);
 
             if (userExist)
             {
@@ -52,13 +48,13 @@ namespace EconomicManagementAPP.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> VerificaryUser(string Email, string StandarEmail)
+        public async Task<IActionResult> VerificaryUser(string email)
         {
-            var userExist = await repositorieUsers.Exist(Email, StandarEmail);
+            var userExist = await repositorieUsers.Exist(email);
 
             if (userExist)
             {
-                return Json($"The account {Email}{StandarEmail} already exist");
+                return Json($"The account {email} already exist");
             }
 
             return Json(true);

@@ -116,3 +116,5 @@ D:\Practicas-Proyectos\CSharp\GIT\EconomicManagementAPP\EconomicManagementAPP\ob
 D:\Practicas-Proyectos\CSharp\GIT\EconomicManagementAPP\EconomicManagementAPP\obj\Debug\net6.0\EconomicManagementAPP.pdb
 D:\Practicas-Proyectos\CSharp\GIT\EconomicManagementAPP\EconomicManagementAPP\obj\Debug\net6.0\EconomicManagementAPP.genruntimeconfig.cache
 D:\Practicas-Proyectos\CSharp\GIT\EconomicManagementAPP\EconomicManagementAPP\obj\Debug\net6.0\EconomicManagementAPP.csproj.AssemblyReference.cache
+D:\Practicas-Proyectos\CSharp\GIT\EconomicManagementAPP\EconomicManagementAPP\bin\Debug\net6.0\AutoMapper.dll
+D:\Practicas-Proyectos\CSharp\GIT\EconomicManagementAPP\EconomicManagementAPP\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

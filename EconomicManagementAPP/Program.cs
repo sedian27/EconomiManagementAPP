@@ -10,6 +10,7 @@ builder.Services.AddTransient<IRepositorieCategories, RepositorieCategories>();
 builder.Services.AddTransient<IRepositorieOperationTypes, RepositorieOperationTypes>();
 builder.Services.AddTransient<IRepositorieTransactions, RepositorieTransactions>();
 builder.Services.AddTransient<IRepositorieUsers, RepositorieUsers>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

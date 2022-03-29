@@ -38,7 +38,7 @@ namespace EconomicManagementAPP.Services
                                     @"SELECT 1 FROM Accounts a
                                     JOIN AccountTypes at ON at.Id = a.AccountTypeId
                                     JOIN Users u ON u.Id = at.UserId
-                                    WHERE Name = @name u.Id = @userId;",
+                                    WHERE a.Name = @name AND u.Id = @userId;",
                                     new { name, userId });
             return exist == 1;
         }
@@ -46,11 +46,12 @@ namespace EconomicManagementAPP.Services
         public async Task<IEnumerable<Accounts>> GetAccounts(int userId)
         {
             using var connection = new SqlConnection(connectionString);
-            return await connection.QueryAsync<Accounts>(@"SELECT Id, Name, AccountTypeId, Balance, Description 
+            return await connection.QueryAsync<Accounts>(@"SELECT a.Id, a.Name, at.Name AS AccountType, a.Balance, a.Description 
                                                         FROM Accounts a
                                                         JOIN AccountTypes at ON at.Id = a.AccountTypeId
                                                         JOIN Users u ON u.Id = at.UserId
-                                                        WHERE u.Id = @userId;", new { userId });
+                                                        WHERE u.Id = @userId
+                                                        ORDER BY at.OrderAccount;", new { userId });
         }
         public async Task Modify(Accounts account)
         {
@@ -67,11 +68,11 @@ namespace EconomicManagementAPP.Services
         {
             using var connection = new SqlConnection(connectionString);
 
-            return await connection.QueryFirstOrDefaultAsync<Accounts>(@"SELECT Id, Name, AccountTypeId, Balance, Description
-                                                                       FROM Account a
+            return await connection.QueryFirstOrDefaultAsync<Accounts>(@"SELECT a.Id, a.Name, a.AccountTypeId, a.Balance, a.Description
+                                                                       FROM Accounts a
                                                                        JOIN AccountTypes at ON at.Id = a.AccountTypeId
                                                                        JOIN Users u ON u.Id = at.UserId
-                                                                       WHERE Id = @id AND u.Id = @userId",
+                                                                       WHERE a.Id = @id AND u.Id = @userId",
                                                                        new { id, userId  });
         }
 

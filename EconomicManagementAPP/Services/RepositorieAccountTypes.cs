@@ -26,9 +26,11 @@ namespace EconomicManagementAPP.Services
         {
             using var connection = new SqlConnection(connectionString);
             // Requiere el await - tambien requiere el Async al final de la query
-            var id = await connection.QuerySingleAsync<int>(@"INSERT INTO AccountTypes 
-                                                (Name, UserId, OrderAccount) 
-                                                VALUES (@Name, @UserId, @OrderAccount); SELECT SCOPE_IDENTITY();", accountTypes);
+            var id = await connection.QuerySingleAsync<int>(
+                "SP_AccountType_Insert",
+                new { accountTypes.UserId, accountTypes.Name },
+                commandType : System.Data.CommandType.StoredProcedure
+                );
             accountTypes.Id = id;
         }
 
@@ -39,11 +41,9 @@ namespace EconomicManagementAPP.Services
         {
             using var connection = new SqlConnection(connectionString);
             // El select 1 es traer lo primero que encuentre y el default es 0
-            var exist = await connection.QueryFirstOrDefaultAsync<int>(
-                                    @"SELECT 1
-                                    FROM AccountTypes
-                                    WHERE Name = @name AND UserId = @userId;",
-                                    new { name, userId });
+            var exist = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM AccountTypes
+                                                                         WHERE Name = @name AND UserId = @userId;",
+                                                                         new { name, userId });
             return exist == 1;
         }
 
@@ -52,9 +52,9 @@ namespace EconomicManagementAPP.Services
         {
             using var connection = new SqlConnection(connectionString);
             return await connection.QueryAsync<AccountTypes>(@"SELECT Id, Name, OrderAccount
-                                                            FROM AccountTypes
-                                                            WHERE UserId = @UserId
-                                                            ORDER BY OrderAccount", new { userId });
+                                                               FROM AccountTypes
+                                                               WHERE UserId = @UserId
+                                                               ORDER BY OrderAccount", new { userId });
         }
         // Actualizar
         public async Task Modify(AccountTypes accountTypes)
@@ -70,11 +70,10 @@ namespace EconomicManagementAPP.Services
         {
             using var connection = new SqlConnection(connectionString);
 
-            return await connection.QueryFirstOrDefaultAsync<AccountTypes>(@"
-                                                                SELECT Id, Name, UserId, OrderAccount
-                                                                FROM AccountTypes
-                                                                WHERE Id = @Id AND UserID = @UserID",
-                                                                new { id, userId });
+            return await connection.QueryFirstOrDefaultAsync<AccountTypes>(@"SELECT Id, Name, UserId, OrderAccount
+                                                                             FROM AccountTypes
+                                                                             WHERE Id = @Id AND UserID = @UserID",
+                                                                             new { id, userId });
         }
 
         //Eliminar

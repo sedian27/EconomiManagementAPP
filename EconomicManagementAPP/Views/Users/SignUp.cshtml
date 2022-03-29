@@ -1,21 +1,17 @@
 ﻿@model Users
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Sign Up";
 }
-
-<h1>Register user</h1>
+<div class="d-flex align-content-center">
+    <h1>Sign Up</h1>
+</div>
 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<form asp-action="Create">
+<form asp-action="SignUp">
     <div class="mb-3">
         <label asp-for="Email" class="form-label"></label>
         <input type="email" asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"> </span>
-    </div>
-    <div class="mb-3">
-        <label asp-for="StandarEmail" class="form-label"></label>
-        <input type="email" asp-for="StandarEmail" class="form-control" />
-        <span asp-validation-for="StandarEmail" class="text-danger"> </span>
     </div>
     <div class="mb-3">
         <label asp-for="Password" class="form-label"></label>
