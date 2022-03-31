@@ -3,7 +3,6 @@ using EconomicManagementAPP.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 
 namespace EconomicManagementAPP.Controllers
 {
@@ -11,21 +10,18 @@ namespace EconomicManagementAPP.Controllers
     {
         private readonly IRepositorieTransactions repositorieTransactions;
         private readonly IRepositorieOperationTypes repositorieOperationTypes;
-        private readonly IRepositorieAccounts repositorieAccounts;
         private readonly IRepositorieCategories repositorieCategories;
         private readonly IUserServices userServices;
         private readonly IMapper mapper;
 
         public TransactionsController(IRepositorieTransactions repositorieTransactions,
                                       IRepositorieOperationTypes repositorieOperationTypes,
-                                      IRepositorieAccounts repositorieAccounts,
                                       IRepositorieCategories repositorieCategories,
                                       IUserServices userServices,
                                       IMapper mapper)
         {
             this.repositorieTransactions = repositorieTransactions;
             this.repositorieOperationTypes = repositorieOperationTypes;
-            this.repositorieAccounts = repositorieAccounts;
             this.repositorieCategories = repositorieCategories;
             this.userServices = userServices;
             this.mapper = mapper;
@@ -37,14 +33,14 @@ namespace EconomicManagementAPP.Controllers
             return View(transaction);
         }
 
-        public async Task<IActionResult> Create()
+        [HttpGet]
+        public async Task<IActionResult> Create(int id)
         {
             var userId = userServices.GetUserId();
             var model = new TransactionsViewModel();
-
             model.OperationTypes = await GetOperationTypes();
-            model.Accounts = await GetAccounts(userId);
             model.Categories = await GetCategories(userId, 1);
+            model.AccountId = id;
 
             return View(model);
         }
@@ -65,7 +61,7 @@ namespace EconomicManagementAPP.Controllers
             }
 
             await repositorieTransactions.Create(transaction);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -82,7 +78,6 @@ namespace EconomicManagementAPP.Controllers
 
             var model = mapper.Map<TransactionsViewModel>(transaction);
             model.OperationTypes = await GetOperationTypes();
-            model.Accounts = await GetAccounts(userId);
             model.Categories = await GetCategories(userId, 1);
 
             return View(model);
@@ -100,7 +95,7 @@ namespace EconomicManagementAPP.Controllers
             }
 
             await repositorieTransactions.Modify(transaction);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
 
         [HttpGet]
@@ -129,7 +124,7 @@ namespace EconomicManagementAPP.Controllers
             }
 
             await repositorieTransactions.Delete(id);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
 
         private async Task<IEnumerable<SelectListItem>> GetCategories(int userId, int operationTypes)
@@ -142,12 +137,6 @@ namespace EconomicManagementAPP.Controllers
         {
             var OperationTypes = await repositorieOperationTypes.GetOperationTypes();
             return OperationTypes.Select(x => new SelectListItem(x.Description, x.Id.ToString()));
-        }
-
-        private async Task<IEnumerable<SelectListItem>> GetAccounts(int userId) 
-        {
-            var Accounts = await repositorieAccounts.GetAccounts(userId);
-            return Accounts.Select(x => new SelectListItem(x.Name, x.Id.ToString()));
         }
 
         [HttpPost]

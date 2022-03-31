@@ -30,6 +30,8 @@ namespace EconomicManagementAPP.Services
                                                                            WHERE Id = @id AND UserId = @userId",
                                                                            new { id, userId });
         }
+
+        // Obtener todas las transacciones
         public async Task<IEnumerable<Transactions>> GetTransactions(int userId) 
         {
             using var connection = new SqlConnection(connectionString);
@@ -38,12 +40,14 @@ namespace EconomicManagementAPP.Services
                                                              WHERE UserId = @userId;", new { userId });
         }
 
+        // Obtener Transacciones de una cuenta
         public async Task<IEnumerable<Transactions>> GetTransactions(int accountId, int userId)
         {
             using var connection = new SqlConnection(connectionString);
             return await connection.QueryAsync<Transactions>(@"SELECT Id, UserId, TransactionDate, Total, OperationTypeId, Description, AccountId, CategoryId
                                                              FROM Transactions
-                                                             WHERE AccountId = @accountId AND UserId = @userId;", new { accountId, userId });
+                                                             WHERE AccountId = @accountId AND UserId = @userId
+                                                             ORDER BY Id DESC;", new { accountId, userId });
         }
 
         public async Task Modify(Transactions transaction) 

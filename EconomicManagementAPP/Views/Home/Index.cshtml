@@ -4,17 +4,24 @@
 }
 <div>
     <div class="d-flex justify-content-between">
-        <select asp-for="Accounts" asp-items="Model.Accounts" class="form-select w-50"></select>
-        <a class="btn btn-success" asp-controller="Accounts" asp-action="Create">
-            <i class="bi bi-plus-circle-fill"></i>
-            <span>Add Account</span>
-        </a>
+        <div class="d-flex">
+            <select asp-for="Accounts" asp-items="Model.Accounts" class="form-select pe-5 me-2"></select>
+            <div id="AccountActions" class="d-flex">
+                
+            </div>
+        </div>
+        <div>
+            <a class="btn btn-success" asp-controller="Accounts" asp-action="Create">
+                <i class="bi bi-plus-circle-fill"></i>
+                <span>Add Account</span>
+            </a>
+        </div>
     </div>
     <div class="d-flex justify-content-between mt-4">
         <div class="">
             <h3>Balance: <span id="balance" class="fw-bold">0.00</span></h3>
         </div>
-        <a class="btn btn-primary" asp-controller="Transactions" asp-action="Create">
+        <a class="btn btn-info" id="createTransaction" asp-controller="Transactions" asp-action="Create">
             <i class="bi bi-plus-circle-fill"></i>
             <span>Add Transaction</span>
         </a>
@@ -23,19 +30,12 @@
         <table class="table table-hover">
             <thead class="table-info">
                 <tr>
+                    <th>Actions</th>
                     <th>Description</th>
                     <th>Amount</th>
                 </tr>
             </thead>
             <tbody id="transactions">
-                <tr class="table-success">
-                    <td>Transaction Info</td>
-                    <td class="fw-bold">500.00</td>
-                </tr>
-                <tr class="table-danger">
-                    <td>Transaction Info</td>
-                    <td class="fw-bold">500.00</th>
-                </tr>
             </tbody>
         </table>
     </div>

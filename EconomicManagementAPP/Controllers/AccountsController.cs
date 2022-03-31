@@ -57,7 +57,7 @@ namespace EconomicManagementAPP.Controllers
                 return View(account);
             }
             await repositorieAccounts.Create(account);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
 
         [HttpGet]
@@ -104,7 +104,7 @@ namespace EconomicManagementAPP.Controllers
             }
 
             await repositorieAccounts.Modify(account);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
 
         [HttpGet]
@@ -133,7 +133,7 @@ namespace EconomicManagementAPP.Controllers
             }
 
             await repositorieAccounts.Delete(id);
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Home");
         }
 
         private async Task<IEnumerable<SelectListItem>> GetAccountTypes(int userId) 
