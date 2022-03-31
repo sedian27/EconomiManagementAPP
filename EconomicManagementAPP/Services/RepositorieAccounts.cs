@@ -1,18 +1,10 @@
 ﻿using Dapper;
+using EconomicManagementAPP.Interfaces;
 using EconomicManagementAPP.Models;
 using Microsoft.Data.SqlClient;
 
 namespace EconomicManagementAPP.Services
 {
-    public interface IRepositorieAccounts
-    {
-        Task Create(Accounts account);
-        Task<bool> Exist(string name, int userId);
-        Task<IEnumerable<Accounts>> GetAccounts(int userId);
-        Task Modify(Accounts account);
-        Task<Accounts> GetAccountById(int id, int userId);
-        Task Delete(int id);
-    }
     public class RepositorieAccounts : IRepositorieAccounts
     {
         private readonly string connectionString;
@@ -52,6 +44,17 @@ namespace EconomicManagementAPP.Services
                                                         JOIN Users u ON u.Id = at.UserId
                                                         WHERE u.Id = @userId
                                                         ORDER BY at.OrderAccount;", new { userId });
+        }
+
+        public async Task<Accounts> GetFirstAccount(int userId)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryFirstOrDefaultAsync<Accounts>(@"SELECT TOP 1 a.Id, a.Name, at.Name AS AccountType, a.Balance, a.Description 
+                                                        FROM Accounts a
+                                                        JOIN AccountTypes at ON at.Id = a.AccountTypeId
+                                                        JOIN Users u ON u.Id = at.UserId
+                                                        WHERE u.Id = @userId
+                                                        ORDER BY a.Id ASC;", new { userId });
         }
         public async Task Modify(Accounts account)
         {

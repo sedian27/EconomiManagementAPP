@@ -7,11 +7,12 @@ namespace EconomicManagementAPP.Models
     {
         public int Id { get; set; }
         [Required(ErrorMessage = "{0} is required")]
-        [EmailAddress(ErrorMessage = "Invalid Email")]
-        [Remote(action: "VerificaryUser", controller: "Users")]//Activamos la validacion se dispara peticion http hacia el back 
+        [EmailAddress(ErrorMessage = "Invalid format Email")]
         public string Email { get; set; }
         public string StandarEmail { get; set; }
         [Required(ErrorMessage = "{0} is required")]
+        [DataType(DataType.Password)]
+        [StringLength(30, MinimumLength = 6, ErrorMessage = "Minimum 6 characters required and Maximum 30")]
         public string Password { get; set; }
     }
 }

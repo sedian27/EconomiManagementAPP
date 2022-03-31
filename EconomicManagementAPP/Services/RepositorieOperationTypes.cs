@@ -1,18 +1,10 @@
 ﻿using Dapper;
+using EconomicManagementAPP.Interfaces;
 using EconomicManagementAPP.Models;
 using Microsoft.Data.SqlClient;
 
 namespace EconomicManagementAPP.Services
 {
-    public interface IRepositorieOperationTypes
-    {
-        Task Create(OperationTypes operationType);
-        Task<bool> Exist(string description);
-        Task<OperationTypes> GetOperationTypeById(int id);
-        Task<IEnumerable<OperationTypes>> GetOperationTypes();
-        Task Modify(OperationTypes operationType);
-        Task Delete(int id);
-    }
     public class RepositorieOperationTypes : IRepositorieOperationTypes
     {
         private readonly string connectionString;

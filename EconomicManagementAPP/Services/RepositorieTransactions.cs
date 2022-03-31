@@ -1,18 +1,10 @@
 ﻿using Dapper;
+using EconomicManagementAPP.Interfaces;
 using EconomicManagementAPP.Models;
 using Microsoft.Data.SqlClient;
 
 namespace EconomicManagementAPP.Services
 {
-    public interface IRepositorieTransactions
-    {
-        Task Create(Transactions transaction);
-        //Task<bool> Exist(string Name, int UserId);
-        Task<Transactions> GetTransactionById(int id, int userId);
-        Task<IEnumerable<Transactions>> GetTransactions(int userId);
-        Task Modify(Transactions transaction);
-        Task Delete(int id);
-    }
     public class RepositorieTransactions : IRepositorieTransactions
     {
         private readonly string connectionString;
@@ -45,6 +37,15 @@ namespace EconomicManagementAPP.Services
                                                              FROM Transactions
                                                              WHERE UserId = @userId;", new { userId });
         }
+
+        public async Task<IEnumerable<Transactions>> GetTransactions(int accountId, int userId)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryAsync<Transactions>(@"SELECT Id, UserId, TransactionDate, Total, OperationTypeId, Description, AccountId, CategoryId
+                                                             FROM Transactions
+                                                             WHERE AccountId = @accountId AND UserId = @userId;", new { accountId, userId });
+        }
+
         public async Task Modify(Transactions transaction) 
         {
             using var connection = new SqlConnection(connectionString);

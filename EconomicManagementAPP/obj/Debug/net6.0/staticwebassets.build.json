@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "byrhIJn2IU2W3dHi3pxBVySbMUhL9dNBJG0qxpWyeBM=",
+  "Hash": "AM4jdM8q2UF6+J6FvZayN33pRQgdtfYAl9pNibEM4ik=",
   "Source": "EconomicManagementAPP",
   "BasePath": "_content/EconomicManagementAPP",
   "Mode": "Default",
@@ -83,6 +83,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "D:\\Practicas-Proyectos\\CSharp\\GIT\\EconomicManagementAPP\\EconomicManagementAPP\\wwwroot\\js\\index.js",
+      "SourceId": "EconomicManagementAPP",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Practicas-Proyectos\\CSharp\\GIT\\EconomicManagementAPP\\EconomicManagementAPP\\wwwroot\\",
+      "BasePath": "_content/EconomicManagementAPP",
+      "RelativePath": "js/index.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\index.js"
     },
     {
       "Identity": "D:\\Practicas-Proyectos\\CSharp\\GIT\\EconomicManagementAPP\\EconomicManagementAPP\\wwwroot\\js\\site.js",

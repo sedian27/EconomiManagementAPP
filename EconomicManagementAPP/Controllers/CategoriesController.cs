@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using EconomicManagementAPP.Models;
-using EconomicManagementAPP.Services;
+using EconomicManagementAPP.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -10,23 +10,23 @@ namespace EconomicManagementAPP.Controllers
     {
         private readonly IRepositorieCategories repositorieCategories;
         private readonly IRepositorieOperationTypes repositorieOperationTypes;
-        private readonly IRepositorieUsers repositorieUsers;
+        private readonly IUserServices userServices;
         private readonly IMapper mapper;
 
         public CategoriesController(IRepositorieCategories repositorieCategories,
                                     IRepositorieOperationTypes repositorieOperationTypes,
-                                    IRepositorieUsers repositorieUsers,
+                                    IUserServices userServices,
                                     IMapper mapper)
         {
             this.repositorieCategories = repositorieCategories;
             this.repositorieOperationTypes = repositorieOperationTypes;
-            this.repositorieUsers = repositorieUsers;
+            this.userServices = userServices;
             this.mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var categorie = await repositorieCategories.GetCategories(userId);
             return View(categorie);
         }
@@ -42,7 +42,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Categories categorie)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             categorie.UserId = userId;
 
             if (!ModelState.IsValid)
@@ -81,7 +81,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpGet]
         public async Task<ActionResult> Modify(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var categorie = await repositorieCategories.GetCategorieById(id, userId);
 
             if (categorie is null)
@@ -98,7 +98,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<ActionResult> Modify(Categories categorie)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var categorieExists = await repositorieCategories.GetCategorieById(categorie.Id, userId);
 
             if (categorieExists is null)
@@ -113,7 +113,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var categorie = await repositorieCategories.GetCategorieById(id, userId);
 
             if (categorie is null)
@@ -127,7 +127,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccount(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var categorie = await repositorieCategories.GetCategorieById(id, userId);
 
             if (categorie is null)
@@ -138,7 +138,7 @@ namespace EconomicManagementAPP.Controllers
             await repositorieCategories.Delete(id);
             return RedirectToAction("Index");
         }
-
+        //Lista de Tipos de operacion
         private async Task<IEnumerable<SelectListItem>> GetOperationTypes() 
         {
             var operationTypes = await repositorieOperationTypes.GetOperationTypes();

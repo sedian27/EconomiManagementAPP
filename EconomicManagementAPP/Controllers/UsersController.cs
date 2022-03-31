@@ -1,28 +1,35 @@
 ﻿using EconomicManagementAPP.Models;
-using EconomicManagementAPP.Services;
+using EconomicManagementAPP.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EconomicManagementAPP.Controllers
 {
     public class UsersController : Controller
     {
         private readonly IRepositorieUsers repositorieUsers;
+        private readonly UserManager<Users> userManager;
+        private readonly SignInManager<Users> signInManager;
 
-        public UsersController(IRepositorieUsers repositorieUsers)
+        public UsersController(IRepositorieUsers repositorieUsers,
+                               UserManager<Users> userManager,
+                               SignInManager<Users> signInManager)
         {
             this.repositorieUsers = repositorieUsers;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var users = await repositorieUsers.GetUsers();
-            return View(users);
-        }
+        [AllowAnonymous]
         public IActionResult SignUp()
         {
             return View();
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> SignUp(Users user)
         {
@@ -31,33 +38,25 @@ namespace EconomicManagementAPP.Controllers
                 return View(user);
             }
 
-            user.StandarEmail = user.Email.ToUpper();
-
             var userExist =
                await repositorieUsers.Exist(user.Email);
 
             if (userExist)
             {
                 ModelState.AddModelError(nameof(user.Email),
-                    $"Any Email already use.");
+                    $"Email already use.");
 
                 return View(user);
             }
-            await repositorieUsers.Create(user);
-            return RedirectToAction("Index");
-        }
 
-        [HttpGet]
-        public async Task<IActionResult> VerificaryUser(string email)
-        {
-            var userExist = await repositorieUsers.Exist(email);
-
-            if (userExist)
+            var result = await userManager.CreateAsync(user, password: user.Password);
+            if(result.Succeeded)
             {
-                return Json($"The account {email} already exist");
+                await signInManager.SignInAsync(user, isPersistent: true);
+                return RedirectToAction("Index", "Transactions");
             }
 
-            return Json(true);
+            return View(user);
         }
 
         //Actualizar
@@ -86,31 +85,40 @@ namespace EconomicManagementAPP.Controllers
             await repositorieUsers.Modify(user);
             return RedirectToAction("Index");
         }
-        // Eliminar
+
+        //Permite que usuarios no identificados puedan ejecutar le metodo
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var user = await repositorieUsers.GetUserById(id);
-
-            if (user is null)
-            {
-                return RedirectToAction("NotFount", "Home");
-            }
-
-            return View(user);
+        public IActionResult Login()
+        {   
+            return View();
         }
-        [HttpPost]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var user = await repositorieUsers.GetUserById(id);
 
-            if (user is null)
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel user) 
+        {
+            if(!ModelState.IsValid)
             {
-                return RedirectToAction("NotFound", "Home");
+                return View(user);
             }
 
-            await repositorieUsers.Delete(id);
-            return RedirectToAction("Index");
+            var result = await signInManager.PasswordSignInAsync(user.Email, user.Password, user.Remember, lockoutOnFailure: false);
+            
+            if(!result.Succeeded)
+            {
+                ModelState.AddModelError(string.Empty, "Wrong Email or Password");
+                return View(user);
+            }
+
+            return RedirectToAction("Index", "Accounts");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            return RedirectToAction("Login");
         }
     }
 }

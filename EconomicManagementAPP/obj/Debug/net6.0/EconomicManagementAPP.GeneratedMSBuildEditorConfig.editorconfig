@@ -79,6 +79,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[D:/Practicas-Proyectos/CSharp/GIT/EconomicManagementAPP/EconomicManagementAPP/Views/Shared/_LinksLogin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MaW5rc0xvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [D:/Practicas-Proyectos/CSharp/GIT/EconomicManagementAPP/EconomicManagementAPP/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -99,12 +103,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNhY3Rpb25zXE1vZGlmeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Practicas-Proyectos/CSharp/GIT/EconomicManagementAPP/EconomicManagementAPP/Views/Users/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcRGVsZXRlLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[D:/Practicas-Proyectos/CSharp/GIT/EconomicManagementAPP/EconomicManagementAPP/Views/Users/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcSW5kZXguY3NodG1s
+[D:/Practicas-Proyectos/CSharp/GIT/EconomicManagementAPP/EconomicManagementAPP/Views/Users/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlcnNcTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [D:/Practicas-Proyectos/CSharp/GIT/EconomicManagementAPP/EconomicManagementAPP/Views/Users/Modify.cshtml]

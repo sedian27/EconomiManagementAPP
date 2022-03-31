@@ -71,3 +71,7 @@ CREATE TABLE [Transactions](
 	CONSTRAINT [FK_TransactionsCategories] FOREIGN KEY (CategoryId) REFERENCES Categories(Id)
 )
 GO
+
+INSERT INTO OperationTypes VALUES
+('Ingreso'),
+('Gasto')

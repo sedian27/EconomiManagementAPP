@@ -1,4 +1,4 @@
-﻿using EconomicManagementAPP.Services;
+﻿using EconomicManagementAPP.Interfaces;
 using EconomicManagementAPP.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,38 +10,28 @@ namespace EconomicManagementAPP.Controllers
     {
         private readonly IRepositorieAccounts repositorieAccounts;
         private readonly IRepositorieAccountTypes repositorieAccountTypes;
-        private readonly IRepositorieUsers repositorieUsers;
+        private readonly IUserServices userServices;
         private readonly IMapper mapper;
 
         public AccountsController(IRepositorieAccounts repositorieAccounts,
                                   IRepositorieAccountTypes repositorieAccountTypes,
-                                  IRepositorieUsers repositorieUsers,
+                                  IUserServices userServices,
                                   IMapper mapper)
         {
             this.repositorieAccounts = repositorieAccounts;
             this.repositorieAccountTypes = repositorieAccountTypes;
-            this.repositorieUsers = repositorieUsers;
+            this.userServices = userServices;
             this.mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userId = repositorieUsers.GetUserId();
-            var accounts = await repositorieAccounts.GetAccounts(userId);
-            var modelo = accounts
-                .GroupBy(x => x.AccountType)
-                .Select(group => new AccountsIndexViewModel 
-                { 
-                    AccountType = group.Key,
-                    Accounts = group.AsEnumerable()
-                }).ToList();
-
-            return View(modelo);
+            return View();
         }
 
         public async Task<IActionResult> Create()
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var model = new AccountsViewModel();
             model.AccountTypes = await GetAccountTypes(userId);
             return View(model);
@@ -50,7 +40,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Accounts account)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             if (!ModelState.IsValid)
             {
                 return View(account);
@@ -87,7 +77,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpGet]
         public async Task<ActionResult> Modify(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
 
             var account = await repositorieAccounts.GetAccountById(id, userId);
 
@@ -105,7 +95,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<ActionResult> Modify(Accounts account)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var accountExists = await repositorieAccounts.GetAccountById(account.Id, userId);
 
             if (accountExists is null)
@@ -120,7 +110,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var account = await repositorieAccounts.GetAccountById(id, userId);
 
             if (account is null)
@@ -134,7 +124,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccount(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var account = await repositorieAccounts.GetAccountById(id, userId);
 
             if (account is null)

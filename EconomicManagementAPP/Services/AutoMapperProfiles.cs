@@ -7,8 +7,10 @@ namespace EconomicManagementAPP.Services
     {
         public AutoMapperProfiles()
         {
+            CreateMap<Accounts, AccountsIndexViewModel>();
             CreateMap<Accounts, AccountsViewModel>();
             CreateMap<Categories, CategoriesViewModel>();
+            CreateMap<Transactions, TransactionsViewModel>();
         }
     }
 }

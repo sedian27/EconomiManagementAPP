@@ -1,5 +1,8 @@
-﻿using EconomicManagementAPP.Models;
+﻿using AutoMapper;
+using EconomicManagementAPP.Interfaces;
+using EconomicManagementAPP.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 
 namespace EconomicManagementAPP.Controllers
@@ -7,15 +10,30 @@ namespace EconomicManagementAPP.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IRepositorieAccounts repositorieAccounts;
+        private readonly IRepositorieTransactions repositorieTransactions;
+        private readonly IUserServices userServices;
+        private readonly IMapper mapper;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,
+                              IRepositorieAccounts repositorieAccounts,
+                              IRepositorieTransactions repositorieTransactions,
+                              IUserServices userServices,
+                              IMapper mapper)
         {
             _logger = logger;
+            this.repositorieAccounts = repositorieAccounts;
+            this.repositorieTransactions = repositorieTransactions;
+            this.userServices = userServices;
+            this.mapper = mapper;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var userId = userServices.GetUserId();
+            var model = new AccountsIndexViewModel();
+            model.Accounts = await GetAccounts(userId);
+            return View(model);
         }
 
         public IActionResult Privacy()
@@ -33,6 +51,20 @@ namespace EconomicManagementAPP.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<IEnumerable<SelectListItem>> GetAccounts(int userId)
+        {
+            var accounts = await repositorieAccounts.GetAccounts(userId);
+            return accounts.Select(x => new SelectListItem(x.Name, x.Id.ToString()));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetTransactions([FromBody] int accountId)
+        {
+            var userId = userServices.GetUserId();
+            var transactions = await repositorieTransactions.GetTransactions(accountId, userId);
+            return Ok(transactions);
         }
     }
 }

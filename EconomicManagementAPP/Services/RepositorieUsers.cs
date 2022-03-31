@@ -1,19 +1,10 @@
 ﻿using Dapper;
+using EconomicManagementAPP.Interfaces;
 using EconomicManagementAPP.Models;
 using Microsoft.Data.SqlClient;
 
 namespace EconomicManagementAPP.Services
 {
-    public interface IRepositorieUsers
-    {
-        Task Create(Users user); // Se agrega task por el asincronismo
-        Task<bool> Exist(string email);
-        Task<IEnumerable<Users>> GetUsers();
-        Task Modify(Users user);
-        Task<Users> GetUserById(int id); // para el modify
-        Task Delete(int id);
-        int GetUserId();
-    }
     public class RepositorieUsers : IRepositorieUsers
     {
         private readonly string connectionString;
@@ -26,31 +17,34 @@ namespace EconomicManagementAPP.Services
         {
             using var connection = new SqlConnection(connectionString);
             var id = await connection.QuerySingleAsync<int>(@"INSERT INTO Users 
-                                                (Email, StandarEmail, Password) 
-                                                VALUES (@Email, @StandarEmail, @Password); SELECT SCOPE_IDENTITY();", user);
+                                                              (Email, StandarEmail, Password) 
+                                                              VALUES (@Email, @StandarEmail, @Password); 
+                                                              SELECT SCOPE_IDENTITY();", user);
             user.Id = id;
         }
 
         public async Task<bool> Exist(string email)
         {
             using var connection = new SqlConnection(connectionString);
-            var exist = await connection.QueryFirstOrDefaultAsync<int>(
-                                    @"SELECT 1
-                                    FROM Users
-                                    WHERE Email = @email;",
-                                    new { email });
+            var exist = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1
+                                                                         FROM Users
+                                                                         WHERE Email = @email;",
+                                                                         new { email });
             return exist == 1;
+        }
+
+        public async Task<Users> GetUserByEmail(string standarEmail) 
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QuerySingleOrDefaultAsync<Users>(@"SELECT * FROM Users
+                                                                       WHERE StandarEmail = @standarEmail",
+                                                                       new { standarEmail });
         }
 
         public async Task<IEnumerable<Users>> GetUsers()
         {
             using var connection = new SqlConnection(connectionString);
             return await connection.QueryAsync<Users>("SELECT Id, Email, StandarEmail FROM Users;");
-        }
-
-        public int GetUserId() 
-        {
-            return 1;
         }
 
         public async Task Modify(Users user)
@@ -67,15 +61,18 @@ namespace EconomicManagementAPP.Services
             using var connection = new SqlConnection(connectionString);
 
             return await connection.QueryFirstOrDefaultAsync<Users>(@"SELECT Id, Email, StandarEmail, Password
-                                                                FROM Users
-                                                                WHERE Id = @Id",
-                                                                new { id });
+                                                                      FROM Users
+                                                                      WHERE Id = @Id",
+                                                                      new { id });
         }
 
-        public async Task Delete(int id)
+        public async Task<Users> Login(string email, string password)
         {
             using var connection = new SqlConnection(connectionString);
-            await connection.ExecuteAsync("DELETE Users WHERE Id = @Id", new { id });
+
+            return await connection.QueryFirstOrDefaultAsync<Users>(@"SELECT * FROM Users
+                                                                      WHERE Email = @email AND Password = @password",
+                                                                      new { email, password });
         }
     }
 }

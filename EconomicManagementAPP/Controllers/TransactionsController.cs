@@ -1,7 +1,9 @@
 ﻿using EconomicManagementAPP.Models;
-using EconomicManagementAPP.Services;
+using EconomicManagementAPP.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EconomicManagementAPP.Controllers
 {
@@ -11,38 +13,37 @@ namespace EconomicManagementAPP.Controllers
         private readonly IRepositorieOperationTypes repositorieOperationTypes;
         private readonly IRepositorieAccounts repositorieAccounts;
         private readonly IRepositorieCategories repositorieCategories;
-        private readonly IRepositorieUsers repositorieUsers;
-
+        private readonly IUserServices userServices;
+        private readonly IMapper mapper;
 
         public TransactionsController(IRepositorieTransactions repositorieTransactions,
                                       IRepositorieOperationTypes repositorieOperationTypes,
                                       IRepositorieAccounts repositorieAccounts,
                                       IRepositorieCategories repositorieCategories,
-                                      IRepositorieUsers repositorieUsers)
+                                      IUserServices userServices,
+                                      IMapper mapper)
         {
             this.repositorieTransactions = repositorieTransactions;
             this.repositorieOperationTypes = repositorieOperationTypes;
             this.repositorieAccounts = repositorieAccounts;
             this.repositorieCategories = repositorieCategories;
-            this.repositorieUsers = repositorieUsers;
+            this.userServices = userServices;
+            this.mapper = mapper;
         }
-
         public async Task<IActionResult> Index()
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var transaction = await repositorieTransactions.GetTransactions(userId);
             return View(transaction);
         }
 
         public async Task<IActionResult> Create()
         {
-            var userId = repositorieUsers.GetUserId();
-            var OperationTypes = await repositorieOperationTypes.GetOperationTypes();
-            var Accounts = await repositorieAccounts.GetAccounts(userId);
+            var userId = userServices.GetUserId();
             var model = new TransactionsViewModel();
 
-            model.OperationTypes = OperationTypes.Select(x => new SelectListItem(x.Description, x.Id.ToString()));
-            model.Accounts = Accounts.Select(x => new SelectListItem(x.Name, x.Id.ToString()));
+            model.OperationTypes = await GetOperationTypes();
+            model.Accounts = await GetAccounts(userId);
             model.Categories = await GetCategories(userId, 1);
 
             return View(model);
@@ -51,9 +52,16 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Transactions transaction)
         {
+            transaction.UserId = userServices.GetUserId();
             if (!ModelState.IsValid)
             {
                 return View(transaction);
+            }
+
+            var operationType = await repositorieOperationTypes.GetOperationTypeById(transaction.OperationTypeId);
+            if (operationType.Description == "Egreso" || operationType.Description == "Gasto")
+            {
+                transaction.Total *= -1;
             }
 
             await repositorieTransactions.Create(transaction);
@@ -63,7 +71,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpGet]
         public async Task<ActionResult> Modify(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
 
             var transaction = await repositorieTransactions.GetTransactionById(id, userId);
 
@@ -72,13 +80,18 @@ namespace EconomicManagementAPP.Controllers
                 return RedirectToAction("NotFound", "Home");
             }
 
-            return View(transaction);
+            var model = mapper.Map<TransactionsViewModel>(transaction);
+            model.OperationTypes = await GetOperationTypes();
+            model.Accounts = await GetAccounts(userId);
+            model.Categories = await GetCategories(userId, 1);
+
+            return View(model);
         }
 
         [HttpPost]
         public async Task<ActionResult> Modify(Transactions transaction)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var transactionExists = await repositorieTransactions.GetTransactionById(transaction.Id, userId);
 
             if (transactionExists is null)
@@ -93,7 +106,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var transaction = await repositorieTransactions.GetTransactionById(id, userId);
 
             if (transaction is null)
@@ -107,7 +120,7 @@ namespace EconomicManagementAPP.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAccount(int id)
         {
-            var userId = repositorieUsers.GetUserId();
+            var userId = userServices.GetUserId();
             var transaction = await repositorieTransactions.GetTransactionById(id, userId);
 
             if (transaction is null)
@@ -125,10 +138,22 @@ namespace EconomicManagementAPP.Controllers
             return categories.Select(x => new SelectListItem(x.Name, x.Id.ToString()));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> GetCategories([FromBody]int operationTypeId) 
+        private async Task<IEnumerable<SelectListItem>> GetOperationTypes() 
         {
-            var userId = repositorieUsers.GetUserId();
+            var OperationTypes = await repositorieOperationTypes.GetOperationTypes();
+            return OperationTypes.Select(x => new SelectListItem(x.Description, x.Id.ToString()));
+        }
+
+        private async Task<IEnumerable<SelectListItem>> GetAccounts(int userId) 
+        {
+            var Accounts = await repositorieAccounts.GetAccounts(userId);
+            return Accounts.Select(x => new SelectListItem(x.Name, x.Id.ToString()));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetCategories([FromBody] int operationTypeId)
+        {
+            var userId = userServices.GetUserId();
             var categories = await GetCategories(userId, operationTypeId);
             return Ok(categories);
         }
