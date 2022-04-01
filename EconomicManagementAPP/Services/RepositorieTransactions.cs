@@ -26,7 +26,7 @@ namespace EconomicManagementAPP.Services
             using var connection = new SqlConnection(connectionString);
 
             return await connection.QueryFirstOrDefaultAsync<Transactions>(@"SELECT Id, UserId, TransactionDate, Total, OperationTypeId, Description, AccountId, CategoryId
-                                                                           FROM Transactions
+                                                                           FROM Transactions t
                                                                            WHERE Id = @id AND UserId = @userId",
                                                                            new { id, userId });
         }
@@ -44,10 +44,11 @@ namespace EconomicManagementAPP.Services
         public async Task<IEnumerable<Transactions>> GetTransactions(int accountId, int userId)
         {
             using var connection = new SqlConnection(connectionString);
-            return await connection.QueryAsync<Transactions>(@"SELECT Id, UserId, TransactionDate, Total, OperationTypeId, Description, AccountId, CategoryId
-                                                             FROM Transactions
-                                                             WHERE AccountId = @accountId AND UserId = @userId
-                                                             ORDER BY Id DESC;", new { accountId, userId });
+            return await connection.QueryAsync<Transactions>(@"SELECT t.Id, t.UserId, t.TransactionDate, t.Total, t.OperationTypeId, t.Description, t.AccountId, t.CategoryId, c.Name AS Category
+                                                             FROM Transactions t
+                                                             JOIN Categories c ON c.Id = t.CategoryId
+                                                             WHERE t.AccountId = @accountId AND t.UserId = @userId
+                                                             ORDER BY t.Id DESC;", new { accountId, userId });
         }
 
         public async Task Modify(Transactions transaction) 

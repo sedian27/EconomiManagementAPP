@@ -7,7 +7,7 @@ const AccountActions = document.getElementById("AccountActions");
 
 AccountSelect.multiple = false;
 
-const insertTransaction = (id, name, amount) => {
+const insertTransaction = (id, name, category, amount) => {
     if (amount < 0) {
         Transaction.innerHTML += `
         <tr class="table-danger">
@@ -15,7 +15,7 @@ const insertTransaction = (id, name, amount) => {
                 <a class="btn btn-primary" href="${window.location.href}Transactions/Modify/${id}""><i class="bi bi-pencil-square"></i></a>
                 <a class="btn btn-danger" href="${window.location.href}Transactions/Delete/${id}"><i class="bi bi-trash"></i></a>
             </td>
-            <td>${name}</td>
+            <td><span class="fw-bold">${category}</span></br>${name}</td>
             <td class="fw-bold">${amount}</th>
         </tr>
         `;
@@ -53,9 +53,10 @@ const getTransactions = async (accountId) => {
     const json = await response.json();
     let amount = json.account.balance;
     Transaction.innerHTML = "";
+    console.log(json.transactions);
     json.transactions.forEach(t => {
         amount += t.total;
-        insertTransaction(t.id, t.description, t.total)
+        insertTransaction(t.id, t.description, t.category, t.total)
     });
 
     Balance.innerHTML = amount;
