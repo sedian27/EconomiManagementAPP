@@ -135,6 +135,12 @@ namespace EconomicManagementAPP.Controllers
                 return RedirectToAction("NotFound", "Home");
             }
 
+            var isUsed = await repositorieCategories.CategorieIsUsed(id);
+            if (isUsed)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
             await repositorieCategories.Delete(id);
             return RedirectToAction("Index");
         }

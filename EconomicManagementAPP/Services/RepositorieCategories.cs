@@ -16,9 +16,9 @@ namespace EconomicManagementAPP.Services
         {
             using var connection = new SqlConnection(connectionString);
             var id = await connection.QuerySingleAsync<int>(@"INSERT INTO Categories 
-                                                            (Name, OperationTypeId, UserId) VALUES
-                                                            (@Name, @OperationTypeId, @UserId); 
-                                                            SELECT SCOPE_IDENTITY();", categorie);
+                                                              (Name, OperationTypeId, UserId) VALUES
+                                                              (@Name, @OperationTypeId, @UserId); 
+                                                              SELECT SCOPE_IDENTITY();", categorie);
             categorie.Id = id;
         }
         public async Task<bool> Exist(string name, int userId)
@@ -26,7 +26,7 @@ namespace EconomicManagementAPP.Services
             using var connection = new SqlConnection(connectionString);
             var exist = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM Categories
                                                                          WHERE Name = @name AND UserId = @userId",
-                                                                        new { name, userId });
+                                                                         new { name, userId });
             return exist == 1;
         }
         public async Task<Categories> GetCategorieById(int id, int userId)
@@ -38,6 +38,16 @@ namespace EconomicManagementAPP.Services
                                                                            WHERE Id = @id AND UserId = @userId",
                                                                            new { id, userId });
         }
+
+        public async Task<bool> CategorieIsUsed(int id)
+        {
+            using var connection = new SqlConnection(connectionString);
+            var used = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM Categories c
+                                                                JOIN Transactions t ON t.CategoryId = c.Id
+                                                                WHERE c.Id = @id", new { id });
+            return used == 1;
+        }
+
         public async Task<IEnumerable<Categories>> GetCategories(int userId)
         {
             using var connection = new SqlConnection(connectionString);
@@ -57,6 +67,7 @@ namespace EconomicManagementAPP.Services
                                                              JOIN OperationTypes ot ON ot.Id = c.OperationTypeId
                                                              WHERE (c.UserId = @userId OR c.UserId = 0) AND c.OperationTypeId = @operationTypeId", new { userId, operationTypeId });
         }
+
         public async Task Modify(Categories categorie)
         {
             using var connection = new SqlConnection(connectionString);

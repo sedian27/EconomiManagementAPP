@@ -64,7 +64,8 @@ namespace EconomicManagementAPP.Controllers
         {
             var userId = userServices.GetUserId();
             var transactions = await repositorieTransactions.GetTransactions(accountId, userId);
-            return Ok(transactions);
+            var account = await repositorieAccounts.GetAccountById(accountId, userId);
+            return Ok(new { transactions, account });
         }
     }
 }

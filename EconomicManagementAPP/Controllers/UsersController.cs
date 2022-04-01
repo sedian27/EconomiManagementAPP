@@ -111,7 +111,7 @@ namespace EconomicManagementAPP.Controllers
                 return View(user);
             }
 
-            return RedirectToAction("Index", "Accounts");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]

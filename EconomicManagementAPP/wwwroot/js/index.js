@@ -51,9 +51,9 @@ const getTransactions = async (accountId) => {
     });
 
     const json = await response.json();
-    let amount = 0.00;
+    let amount = json.account.balance;
     Transaction.innerHTML = "";
-    json.forEach(t => {
+    json.transactions.forEach(t => {
         amount += t.total;
         insertTransaction(t.id, t.description, t.total)
     });

@@ -67,9 +67,28 @@ CREATE TABLE [Transactions](
 	[CategoryId] [int] NOT NULL,
     CONSTRAINT [FK_TransactionsUsers] FOREIGN KEY (UserId) REFERENCES Users(Id),
 	CONSTRAINT [FK_TransactiosOperationType] FOREIGN KEY (OperationTypeId) REFERENCES OperationTypes(Id),
-	CONSTRAINT [FK_TransactionsAccount] FOREIGN KEY (AccountId) REFERENCES Accounts(Id),
+	CONSTRAINT [FK_TransactionsAccount] FOREIGN KEY (AccountId) REFERENCES Accounts(Id) ON DELETE CASCADE,
 	CONSTRAINT [FK_TransactionsCategories] FOREIGN KEY (CategoryId) REFERENCES Categories(Id)
 )
+GO
+
+CREATE PROCEDURE SP_AccountType_Insert
+	@Name nvarchar(50),
+	@UserId int
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE @Order int;
+	SELECT @Order = COALESCE(MAX(OrderAccount), 0)+1
+	FROM AccountTypes
+	WHERE UserId = @UserId
+
+	INSERT INTO AccountTypes(Name, UserId, OrderAccount)
+	VALUES (@Name, @UserId, @Order);
+
+	SELECT SCOPE_IDENTITY();
+END
 GO
 
 INSERT INTO OperationTypes VALUES

@@ -11,5 +11,6 @@ namespace EconomicManagementAPP.Interfaces
         Task Modify(Categories categorie);
         Task Delete(int id);
         Task<IEnumerable<Categories>> GetCategories(int userId, int operationTypeId);
+        Task<bool> CategorieIsUsed(int id);
     }
 }
