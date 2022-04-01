@@ -39,6 +39,16 @@ namespace EconomicManagementAPP.Services
             return exist == 1;
         }
 
+        public async Task<bool> AccountTypeIsUsed(int id)
+        {
+            using var connection = new SqlConnection(connectionString);
+            var used = await connection.QueryFirstOrDefaultAsync<int>(@"SELECT 1 FROM AccountTypes at
+                                                                        JOIN Accounts a ON a.AccountTypeId = at.Id
+                                                                        WHERE at.Id = @id",
+                                                                        new { id });
+            return used == 1;
+        }
+
         // Obtenemos las cuentas del usuario
         public async Task<IEnumerable<AccountTypes>> GetAccounts(int userId)
         {

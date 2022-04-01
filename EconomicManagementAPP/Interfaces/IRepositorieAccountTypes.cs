@@ -10,5 +10,6 @@ namespace EconomicManagementAPP.Interfaces
         Task Modify(AccountTypes accountTypes);
         Task<AccountTypes> GetAccountById(int id, int userId); // para el modify
         Task Delete(int id);
+        Task<bool> AccountTypeIsUsed(int id);
     }
 }

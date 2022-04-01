@@ -93,6 +93,11 @@ namespace EconomicManagementAPP.Controllers
             {
                 return RedirectToAction("NotFound", "Home");
             }
+            var operationType = await repositorieOperationTypes.GetOperationTypeById(transaction.OperationTypeId);
+            if (operationType.Description == "Egreso" || operationType.Description == "Gasto")
+            {
+                transaction.Total *= -1;
+            }
 
             await repositorieTransactions.Modify(transaction);
             return RedirectToAction("Index","Home");
