@@ -26,7 +26,7 @@ const insertTransaction = (id, name, category, amount) => {
                 <a class="btn btn-primary" href="${window.location.href}Transactions/Modify/${id}""><i class="bi bi-pencil-square"></i></a>
                 <a class="btn btn-danger" href="${window.location.href}Transactions/Delete/${id}"><i class="bi bi-trash"></i></a>
             </td>
-            <td>${name}</td>
+            <td><span class="fw-bold">${category}</span></br>${name}</td>
             <td class="fw-bold">${amount}</th>
         </tr>
         `;
